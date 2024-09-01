@@ -173,12 +173,7 @@ public:
                                            m_signalTime,
                                            i_pref, m_signalArrowWidth, m_buyArrowColor, m_sellArrowColor);
             }
-            if (m_showValidTimeIndex)
-            {
-                m_createObjects.CreateFutureVLine(i_ratesTotal, m_signalBar + m_validTimePeriod, SignalColor,
-                                                  STYLE_DOT, 1,
-                                                  i_pref, string(m_signalBar + m_validTimePeriod));
-            }
+
             for (int i = 0; i < 3 && !IsStopped(); i++)
             {
                 if (m_showTps[i] && m_tpLines[i] > 0)
