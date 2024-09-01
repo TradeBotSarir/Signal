@@ -31,6 +31,8 @@ public:
     int m_subWindow;
     ENUM_TIMEFRAMES m_timeFrame;
     int m_zOrder;
+    bool m_validHours[];
+
     //* send notificayion parameters :
     bool m_prinTolog;
     bool m_sendAlert;
