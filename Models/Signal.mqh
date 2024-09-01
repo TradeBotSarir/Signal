@@ -34,7 +34,7 @@ public:
     bool m_isSignal;
     double m_tpLines[3];
     double m_slLines[3];
-    double m_m_signalPrice;
+    double m_signalPrice;
     datetime m_signalTime;
     int m_validTimePeriod;
     ENUM_SIGNAL_TYPE m_signalType;
@@ -43,9 +43,9 @@ public:
     bool m_signalSent;
 
     /*=========================================== setSignalPrice Method 1 ===========================================*/
-    void setSignalPrice(const double i_m_signalPrice) { m_m_signalPrice = i_m_signalPrice; }
+    void setSignalPrice(const double i_m_signalPrice) { m_signalPrice = i_m_signalPrice; }
     /*=========================================== setSignalPrice Method 2 ===========================================*/
-    void setSignalPrice(const double &i_high[], const double &i_low[], const int i_itr) { m_m_signalPrice = m_signalType == BUY_SIGNAL ? i_low[i_itr] : i_high[i_itr]; }
+    void setSignalPrice(const double &i_high[], const double &i_low[], const int i_itr) { m_signalPrice = m_signalType == BUY_SIGNAL ? i_low[i_itr] : i_high[i_itr]; }
     /*=========================================== setSignalPrice Method 3 ===========================================*/
     void setSignalPrice(datetime i_signalTime = -1)
     {
@@ -60,14 +60,8 @@ public:
         {
             signalTime = i_signalTime;
         }
-        MqlRates rates[];
-        ResetLastError();
-        if (CopyRates(m_symbol, m_timeFrame, signalTime, signalTime, rates) > 0)
-        {
-            Print("CopyRates Error: ", GetLastError());
-            return;
-        }
-        m_m_signalPrice = m_signalType == BUY_SIGNAL ? rates[0].low : rates[0].high;
+        m_signalBar = iBarShift(m_symbol, m_timeFrame, signalTime);
+        m_signalPrice = m_signalType == BUY_SIGNAL ? iLow(m_symbol, m_timeFrame, m_signalBar) : iHigh(m_symbol, m_timeFrame, m_signalBar);
     }
 
     /*------------------------------------------- set simple arrow params -------------------------------------------*/
@@ -241,7 +235,7 @@ void Signal::doActionSend()
     {
         if (m_showArrows)
         {
-            m_createObjects.arrow.put(m_signalTime, m_m_signalPrice, trendType, string(m_signalNumber));
+            m_createObjects.arrow.put(m_signalTime, m_signalPrice, trendType, string(m_signalNumber));
         }
 
         //* Show Sl Tp S
