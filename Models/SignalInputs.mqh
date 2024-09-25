@@ -94,9 +94,9 @@ public:
 SignalInputs::SignalInputs()
 {
     m_pref = "sarir_";
-    m_symbol = "";
+    m_symbol = _Symbol;
     m_timeFrame = PERIOD_CURRENT;
-    m_prinTolog = false;
+    m_prinTolog = true;
     m_sendAlert = false;
     m_sendNotification = false;
     m_sendToEmail = false;

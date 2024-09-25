@@ -32,8 +32,8 @@ private:
 public:
     /*------------------------------------------- Parameters -------------------------------------------*/
     bool m_isSignal;
-    double m_tpLines[3];
-    double m_slLines[3];
+    double m_tpLines[];
+    double m_slLines[];
     double m_signalPrice;
     datetime m_signalTime;
     int m_validTimePeriod;
@@ -103,16 +103,18 @@ public:
         m_signalType = NO_SIGNAL;
         m_signalNumber = 0;
         m_signalBar = 0;
-        m_tpLines[0] = EMPTY_VALUE;
-        m_tpLines[1] = EMPTY_VALUE;
-        m_tpLines[2] = EMPTY_VALUE;
-        m_slLines[0] = EMPTY_VALUE;
-        m_slLines[1] = EMPTY_VALUE;
-        m_slLines[2] = EMPTY_VALUE;
+        for (int i = 0; i < ArraySize(m_tpLines); i++)
+        {
+            m_tpLines[i] = EMPTY_VALUE;
+        }
+        for (int i = 0; i < ArraySize(m_slLines); i++)
+        {
+            m_slLines[i] = EMPTY_VALUE;
+        }
     }
 
     //*  Constructor 1
-    Signal() : SignalInputs()
+    Signal(const int i_tpCount = 3, const int i_slCount = 3) : SignalInputs()
     {
         m_isSignal = false;
         m_signalTime = 0;
@@ -120,16 +122,20 @@ public:
         m_signalNumber = 0;
         m_signalBar = 0;
         m_signalSent = false;
-        m_tpLines[0] = EMPTY_VALUE;
-        m_tpLines[1] = EMPTY_VALUE;
-        m_tpLines[2] = EMPTY_VALUE;
-        m_slLines[0] = EMPTY_VALUE;
-        m_slLines[1] = EMPTY_VALUE;
-        m_slLines[2] = EMPTY_VALUE;
+        ArrayResize(m_tpLines, i_tpCount);
+        ArrayResize(m_slLines, i_slCount);
+        for (int i = 0; i < i_tpCount; i++)
+        {
+            m_tpLines[i] = EMPTY_VALUE;
+        }
+        for (int i = 0; i < i_slCount; i++)
+        {
+            m_slLines[i] = EMPTY_VALUE;
+        }
     };
 
     //*  Constructor 2
-    Signal(const SignalInputs &i_signalInputs) : SignalInputs(i_signalInputs)
+    Signal(const SignalInputs &i_signalInputs, const int i_tpCount = 3, const int i_slCount = 3) : SignalInputs(i_signalInputs)
     {
         m_isSignal = false;
         m_signalTime = 0;
@@ -137,12 +143,16 @@ public:
         m_signalNumber = 0;
         m_signalBar = 0;
         m_signalSent = false;
-        m_tpLines[0] = EMPTY_VALUE;
-        m_tpLines[1] = EMPTY_VALUE;
-        m_tpLines[2] = EMPTY_VALUE;
-        m_slLines[0] = EMPTY_VALUE;
-        m_slLines[1] = EMPTY_VALUE;
-        m_slLines[2] = EMPTY_VALUE;
+        ArrayResize(m_tpLines, i_tpCount);
+        ArrayResize(m_slLines, i_slCount);
+        for (int i = 0; i < i_tpCount; i++)
+        {
+            m_tpLines[i] = EMPTY_VALUE;
+        }
+        for (int i = 0; i < i_slCount; i++)
+        {
+            m_slLines[i] = EMPTY_VALUE;
+        }
     };
 
     //* Destructor
