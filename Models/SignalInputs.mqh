@@ -46,8 +46,8 @@ public:
     color m_sellArrowColor;
     //* SL TP parameters
     ENUM_SLTP_COLOR_MODE m_sltpColorMode;
-    bool m_showTps[3];
-    bool m_showSls[3];
+    bool m_showTps[];
+    bool m_showSls[];
     int m_slTpWith;
     color m_solidSlColor;
     color m_solidTpColor;
@@ -106,6 +106,8 @@ SignalInputs::SignalInputs()
     m_buyArrowColor = clrGreen;
     m_sellArrowColor = clrRed;
     m_sltpColorMode = SIMPLE_SLTP_SOLID_COLOR;
+    ArrayResize(m_showTps, 20);
+    ArrayResize(m_showSls, 20);
     ArrayInitialize(m_showTps, false);
     ArrayInitialize(m_showSls, false);
     m_slTpWith = 1;
