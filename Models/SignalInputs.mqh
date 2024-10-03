@@ -51,8 +51,8 @@ public:
     int m_slTpWith;
     color m_solidSlColor;
     color m_solidTpColor;
-    color m_tpColors[3];
-    color m_slColors[3];
+    color m_tpColors[];
+    color m_slColors[];
 
     /*------------------------------------------- Methods -------------------------------------------*/
     //*  Constructor
@@ -93,6 +93,8 @@ public:
  *================================================================================================**/
 SignalInputs::SignalInputs()
 {
+    ArrayResize(m_tpColors, 3);
+    ArrayResize(m_slColors, 3);
     m_pref = "sarir_";
     m_symbol = _Symbol;
     m_timeFrame = PERIOD_CURRENT;
