@@ -41,6 +41,10 @@ class Signal : public SignalInputs {
     int m_signalNumber;
     int m_signalBar;
     bool m_signalSent;
+    string m_addedMessage;
+
+    /*=========================================== setAddedMessage ===========================================*/
+    void setAddedMessage(const string i_addedMessage) { m_addedMessage = i_addedMessage; }
 
     /*=========================================== setSignalPrice Method 1 ===========================================*/
     void setSignalPrice(const double i_m_signalPrice) { m_signalPrice = i_m_signalPrice; }
@@ -96,6 +100,7 @@ class Signal : public SignalInputs {
 
     /*------------------------------------------- Methods -------------------------------------------*/
     void reset() {
+        m_addedMessage = "";
         m_isSignal = false;
         m_signalTime = 0;
         m_signalType = NO_SIGNAL;
@@ -125,6 +130,7 @@ class Signal : public SignalInputs {
         for (int i = 0; i < i_slCount; i++) {
             m_slLines[i] = EMPTY_VALUE;
         }
+        m_addedMessage = "";
     };
 
     //*  Constructor 2
@@ -143,6 +149,7 @@ class Signal : public SignalInputs {
         for (int i = 0; i < i_slCount; i++) {
             m_slLines[i] = EMPTY_VALUE;
         }
+        m_addedMessage = "";
     };
 
     //* Destructor
@@ -181,7 +188,6 @@ class Signal : public SignalInputs {
                 ChartRedraw(m_chartID);
                 break;
             case COT_RELATIVE_NEW_CHART:
-                Print("temp Print");
                 m_chartID = getChartIdBySymbol();
                 if (m_chartID == -1) {
                     m_chartID = ChartOpen(m_symbol, m_timeFrame);
@@ -237,7 +243,7 @@ void Signal::doActionSend() {
     string SignalNumb = "Signal Number : ";
     SignalNumb += string(m_signalNumber);
     //* Set the Message
-    string Message = SignalNumb + " Time : " + TimeToString(m_signalTime) + SignalType + m_symbol;
+    string Message = SignalType + m_symbol + "-" + m_addedMessage + "-" + SignalNumb + " Time : " + TimeToString(m_signalTime);
     //+--- Print Signal Details
     if (m_prinTolog) {
         Print(Message);
@@ -270,7 +276,7 @@ long Signal::getChartIdBySymbol() {
     long chart_id = ChartFirst();  // Get the first chart ID
 
     // Loop through all open charts
-    while (chart_id != 0) {
+    while (chart_id >= 0) {
         // Get the symbol of the current chart
         string chart_symbol = ChartSymbol(chart_id);
 
