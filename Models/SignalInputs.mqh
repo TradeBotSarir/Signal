@@ -64,6 +64,8 @@ class SignalInputs {
     ~SignalInputs();
     //* set all parameters
     void setSignalInputs(const SignalInputs &i_signalInputs);
+    //* baseInit
+    void baseInit(SignalInputs *i_signalInputs);
 
     /*------------------------------------------- Setters -------------------------------------------*/
     void setPref(const string i_pref) { m_pref = i_pref; }
@@ -87,6 +89,7 @@ class SignalInputs {
     void setTpColors(const color &i_tpColors[]) { ArrayCopy(m_tpColors, i_tpColors); }
     void setSlColors(const color &i_slColors[]) { ArrayCopy(m_slColors, i_slColors); }
     void setZOrder(const int i_zOrder) { m_zOrder = i_zOrder; }
+    void setChartOpenType(const ENUM_CHART_OPEN_TYPE i_chartOpenType) { m_chartOpenType = i_chartOpenType; }
 };
 
 /**================================================================================================
@@ -119,6 +122,10 @@ SignalInputs::SignalInputs() {
     ArrayInitialize(m_tpColors, clrGreen);
     ArrayInitialize(m_slColors, clrRed);
     m_zOrder = 0;
+    m_chartOpenType = COT_CURRENT_CHART;
+    ArrayResize(m_validHours, 24);
+    ArrayInitialize(m_validHours, false);
+    m_chartID = 0;
 };
 
 /**================================================================================================
@@ -146,6 +153,10 @@ SignalInputs::SignalInputs(const SignalInputs &i_signalInputs) {
     ArrayCopy(m_tpColors, i_signalInputs.m_tpColors);
     ArrayCopy(m_slColors, i_signalInputs.m_slColors);
     m_zOrder = i_signalInputs.m_zOrder;
+    m_chartOpenType = i_signalInputs.m_chartOpenType;
+    m_subWindow = i_signalInputs.m_subWindow;
+    ArrayCopy(m_validHours, i_signalInputs.m_validHours);
+    m_chartID = i_signalInputs.m_chartID;
 };
 
 /**================================================================================================
@@ -180,4 +191,40 @@ void SignalInputs::setSignalInputs(const SignalInputs &i_signalInputs) {
     ArrayCopy(m_tpColors, i_signalInputs.m_tpColors);
     ArrayCopy(m_slColors, i_signalInputs.m_slColors);
     m_zOrder = i_signalInputs.m_zOrder;
+    m_chartOpenType = i_signalInputs.m_chartOpenType;
+    m_subWindow = i_signalInputs.m_subWindow;
+    ArrayCopy(m_validHours, i_signalInputs.m_validHours);
+    m_chartID = i_signalInputs.m_chartID;
+};
+
+/**================================================================================================
+ * *                                  baseInit
+ * ? This method is used to copy the parameters of the input object to the current object
+ *================================================================================================**/
+void SignalInputs::baseInit(SignalInputs *i_signalInputs) {
+    m_pref = i_signalInputs.m_pref;
+    m_symbol = i_signalInputs.m_symbol;
+    m_timeFrame = i_signalInputs.m_timeFrame;
+    m_prinTolog = i_signalInputs.m_prinTolog;
+    m_sendAlert = i_signalInputs.m_sendAlert;
+    m_sendNotification = i_signalInputs.m_sendNotification;
+    m_sendToEmail = i_signalInputs.m_sendToEmail;
+    m_showSignalsOnChart = i_signalInputs.m_showSignalsOnChart;
+    m_showArrows = i_signalInputs.m_showArrows;
+    m_signalArrowWidth = i_signalInputs.m_signalArrowWidth;
+    m_buyArrowColor = i_signalInputs.m_buyArrowColor;
+    m_sellArrowColor = i_signalInputs.m_sellArrowColor;
+    m_sltpColorMode = i_signalInputs.m_sltpColorMode;
+    ArrayCopy(m_showTps, i_signalInputs.m_showTps);
+    ArrayCopy(m_showSls, i_signalInputs.m_showSls);
+    m_slTpWith = i_signalInputs.m_slTpWith;
+    m_solidSlColor = i_signalInputs.m_solidSlColor;
+    m_solidTpColor = i_signalInputs.m_solidTpColor;
+    ArrayCopy(m_tpColors, i_signalInputs.m_tpColors);
+    ArrayCopy(m_slColors, i_signalInputs.m_slColors);
+    m_zOrder = i_signalInputs.m_zOrder;
+    m_chartOpenType = i_signalInputs.m_chartOpenType;
+    m_subWindow = i_signalInputs.m_subWindow;
+    ArrayCopy(m_validHours, i_signalInputs.m_validHours);
+    m_chartID = i_signalInputs.m_chartID;
 };

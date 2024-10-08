@@ -175,11 +175,20 @@ class Signal : public SignalInputs {
                 break;
             case COT_PURE_NEW_CHART:
                 m_chartID = ChartOpen(m_symbol, m_timeFrame);
+                if (m_chartID == 0) {
+                    Print("ChartOpen failed for symbol : ", m_symbol, "function : ", __FUNCTION__, "file : ", __FILE__, "line : ", __LINE__);
+                }
+                ChartRedraw(m_chartID);
                 break;
             case COT_RELATIVE_NEW_CHART:
+                Print("temp Print");
                 m_chartID = getChartIdBySymbol();
                 if (m_chartID == -1) {
                     m_chartID = ChartOpen(m_symbol, m_timeFrame);
+                    if (m_chartID == 0) {
+                        Print("ChartOpen failed for symbol : ", m_symbol, "function : ", __FUNCTION__, "file : ", __FILE__, "line : ", __LINE__);
+                    }
+                    ChartRedraw(m_chartID);
                 }
                 break;
             case COT_SPECIFIC_CHART:
