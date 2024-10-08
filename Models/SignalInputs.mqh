@@ -14,15 +14,15 @@
 
 /*=========================================== Includes ===========================================*/
 #include "../../SimpleChartObjects/Enums/ENUM_SLTP_COLOR_MODE.mqh"
+#include "../Enums/ENUM_CHART_OPEN_TYPE.mqh"
 /*=========================================== class ===========================================*/
-class SignalInputs
-{
-private:
+class SignalInputs {
+   private:
     /*------------------------------------------- Parameters -------------------------------------------*/
 
     /*------------------------------------------- Methods -------------------------------------------*/
 
-public:
+   public:
     /*------------------------------------------- Parameters -------------------------------------------*/
     //*general parameters:
     string m_pref;
@@ -32,7 +32,7 @@ public:
     ENUM_TIMEFRAMES m_timeFrame;
     int m_zOrder;
     bool m_validHours[];
-   bool m_multiSymbol ;
+    ENUM_CHART_OPEN_TYPE m_chartOpenType;
 
     //* send notificayion parameters :
     bool m_prinTolog;
@@ -92,9 +92,8 @@ public:
 /**================================================================================================
  * *                                  Constructor
  *================================================================================================**/
-SignalInputs::SignalInputs()
-{
-    m_multiSymbol = false;
+SignalInputs::SignalInputs() {
+    m_chartOpenType = COT_CURRENT_CHART;
     ArrayResize(m_tpColors, 3);
     ArrayResize(m_slColors, 3);
     m_pref = "sarir_";
@@ -125,8 +124,7 @@ SignalInputs::SignalInputs()
 /**================================================================================================
  * *                                  Copy Constructor
  *================================================================================================**/
-SignalInputs::SignalInputs(const SignalInputs &i_signalInputs)
-{
+SignalInputs::SignalInputs(const SignalInputs &i_signalInputs) {
     m_pref = i_signalInputs.m_pref;
     m_symbol = i_signalInputs.m_symbol;
     m_timeFrame = i_signalInputs.m_timeFrame;
@@ -160,8 +158,7 @@ SignalInputs::~SignalInputs() {
 /**================================================================================================
  * *                                  Set All Parameters
  *================================================================================================**/
-void SignalInputs::setSignalInputs(const SignalInputs &i_signalInputs)
-{
+void SignalInputs::setSignalInputs(const SignalInputs &i_signalInputs) {
     m_pref = i_signalInputs.m_pref;
     m_symbol = i_signalInputs.m_symbol;
     m_timeFrame = i_signalInputs.m_timeFrame;

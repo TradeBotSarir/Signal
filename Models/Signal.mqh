@@ -14,22 +14,22 @@
 
 /*=========================================== Includes ===========================================*/
 #include "../../Global/Models/Vector.mqh"
+#include "../../SimpleChartObjects/Services/SimpleChartObjects.mqh"
 #include "../Enums/ENUM_SIGNAL_TYPE.mqh"
 #include "SignalInputs.mqh"
-#include "../../SimpleChartObjects/Services/SimpleChartObjects.mqh"
 
 /*=========================================== class ===========================================*/
-class Signal : public SignalInputs
-{
-private:
+class Signal : public SignalInputs {
+   private:
     /*------------------------------------------- Parameters -------------------------------------------*/
     SimpleChartObjects m_createObjects;
     CommonInputParams m_commonInputParams;
     /*------------------------------------------- Methods -------------------------------------------*/
     //* doAction Send Signal On Prev Itrations
     void doActionSend();
+    long getChartIdBySymbol();
 
-public:
+   public:
     /*------------------------------------------- Parameters -------------------------------------------*/
     bool m_isSignal;
     double m_tpLines[];
@@ -47,17 +47,13 @@ public:
     /*=========================================== setSignalPrice Method 2 ===========================================*/
     void setSignalPrice(const double &i_high[], const double &i_low[], const int i_itr) { m_signalPrice = m_signalType == BUY_SIGNAL ? i_low[i_itr] : i_high[i_itr]; }
     /*=========================================== setSignalPrice Method 3 ===========================================*/
-    void setSignalPrice(datetime i_signalTime = -1)
-    {
+    void setSignalPrice(datetime i_signalTime = -1) {
         //* there is two way to set signal price , one is by passing the signal time from before in class object
         //* and the other is by passing the signal time as a parameter
         datetime signalTime;
-        if (i_signalTime == -1)
-        {
+        if (i_signalTime == -1) {
             signalTime = m_signalTime;
-        }
-        else
-        {
+        } else {
             signalTime = i_signalTime;
         }
         m_signalBar = iBarShift(m_symbol, m_timeFrame, signalTime);
@@ -65,8 +61,8 @@ public:
     }
 
     /*------------------------------------------- set simple arrow params -------------------------------------------*/
-    void initAllParams()
-    {
+    void initAllParams() {
+        m_chartID = getChartID();
         m_commonInputParams.setSymbol(m_symbol);
         m_commonInputParams.setTimeFrame(m_timeFrame);
         m_commonInputParams.setPref(m_pref);
@@ -80,10 +76,12 @@ public:
         m_commonInputParams.setZOrder(m_zOrder);
         m_createObjects.arrow.setCommpnParams(m_commonInputParams);
         m_createObjects.arrowSlTp.setCommpnParams(m_commonInputParams);
+        m_createObjects.arrow.setChartID(m_chartID);
 
         m_createObjects.arrow.setBuyColor(m_buyArrowColor);
         m_createObjects.arrow.setSellColor(m_sellArrowColor);
         m_createObjects.arrow.setWidth(m_signalArrowWidth);
+        m_createObjects.arrow.setChartID(m_chartID);
         m_createObjects.arrowSlTp.setWidth(m_signalArrowWidth);
         m_createObjects.arrowSlTp.setTpColors(m_tpColors);
         m_createObjects.arrowSlTp.setSlColors(m_slColors);
@@ -93,29 +91,26 @@ public:
         m_createObjects.arrowSlTp.setSltpColorMode(m_sltpColorMode);
         m_createObjects.arrowSlTp.setShowTps(m_showTps);
         m_createObjects.arrowSlTp.setShowSls(m_showSls);
+        m_createObjects.arrowSlTp.setChartID(m_chartID);
     }
 
     /*------------------------------------------- Methods -------------------------------------------*/
-    void reset()
-    {
+    void reset() {
         m_isSignal = false;
         m_signalTime = 0;
         m_signalType = NO_SIGNAL;
         m_signalNumber = 0;
         m_signalBar = 0;
-        for (int i = 0; i < ArraySize(m_tpLines); i++)
-        {
+        for (int i = 0; i < ArraySize(m_tpLines); i++) {
             m_tpLines[i] = EMPTY_VALUE;
         }
-        for (int i = 0; i < ArraySize(m_slLines); i++)
-        {
+        for (int i = 0; i < ArraySize(m_slLines); i++) {
             m_slLines[i] = EMPTY_VALUE;
         }
     }
 
     //*  Constructor 1
-    Signal(const int i_tpCount = 3, const int i_slCount = 3) : SignalInputs()
-    {
+    Signal(const int i_tpCount = 3, const int i_slCount = 3) : SignalInputs() {
         m_isSignal = false;
         m_signalTime = 0;
         m_signalType = NO_SIGNAL;
@@ -124,19 +119,16 @@ public:
         m_signalSent = false;
         ArrayResize(m_tpLines, i_tpCount);
         ArrayResize(m_slLines, i_slCount);
-        for (int i = 0; i < i_tpCount; i++)
-        {
+        for (int i = 0; i < i_tpCount; i++) {
             m_tpLines[i] = EMPTY_VALUE;
         }
-        for (int i = 0; i < i_slCount; i++)
-        {
+        for (int i = 0; i < i_slCount; i++) {
             m_slLines[i] = EMPTY_VALUE;
         }
     };
 
     //*  Constructor 2
-    Signal(const SignalInputs &i_signalInputs, const int i_tpCount = 3, const int i_slCount = 3) : SignalInputs(i_signalInputs)
-    {
+    Signal(const SignalInputs &i_signalInputs, const int i_tpCount = 3, const int i_slCount = 3) : SignalInputs(i_signalInputs) {
         m_isSignal = false;
         m_signalTime = 0;
         m_signalType = NO_SIGNAL;
@@ -145,12 +137,10 @@ public:
         m_signalSent = false;
         ArrayResize(m_tpLines, i_tpCount);
         ArrayResize(m_slLines, i_slCount);
-        for (int i = 0; i < i_tpCount; i++)
-        {
+        for (int i = 0; i < i_tpCount; i++) {
             m_tpLines[i] = EMPTY_VALUE;
         }
-        for (int i = 0; i < i_slCount; i++)
-        {
+        for (int i = 0; i < i_slCount; i++) {
             m_slLines[i] = EMPTY_VALUE;
         }
     };
@@ -160,26 +150,45 @@ public:
 
     /*=========================================== Send Methods ===========================================*/
     /*=========================================== Send Method 1 :  ===========================================*/
-    void send()
-    {
+    void send() {
         setSignalPrice();
         doActionSend();
     }
     /*=========================================== Send Method 2 :  ===========================================*/
-    void send(const datetime i_signalTime)
-    {
+    void send(const datetime i_signalTime) {
         m_signalTime = i_signalTime;
         setSignalPrice(i_signalTime);
         doActionSend();
     }
     /*=========================================== Send Method 3 : ===========================================*/
-    void send(const double &i_high[], const double &i_low[], const datetime &i_time[], const int i_itr)
-    {
+    void send(const double &i_high[], const double &i_low[], const datetime &i_time[], const int i_itr) {
         m_signalTime = i_time[i_itr];
         setSignalPrice(i_high, i_low, i_itr);
         doActionSend();
     }
     /*------------------------------------------- Getters -------------------------------------------*/
+
+    long getChartID(const long i_specificChartID = NULL) {
+        switch (m_chartOpenType) {
+            case COT_CURRENT_CHART:
+                m_chartID = ChartID();
+                break;
+            case COT_PURE_NEW_CHART:
+                m_chartID = ChartOpen(m_symbol, m_timeFrame);
+                break;
+            case COT_RELATIVE_NEW_CHART:
+                m_chartID = getChartIdBySymbol();
+                if (m_chartID == -1) {
+                    m_chartID = ChartOpen(m_symbol, m_timeFrame);
+                }
+                break;
+            case COT_SPECIFIC_CHART:
+                m_chartID = i_specificChartID;
+                break;
+        }
+
+        return m_chartID;
+    }
 };
 
 /**================================================================================================
@@ -194,18 +203,15 @@ Signal::~Signal() {
  **                                      doActionSend
  *?  doActionSend signal to the user
  *================================================================================================**/
-void Signal::doActionSend()
-{
+void Signal::doActionSend() {
     initAllParams();
 
     //* check if there is no signal
-    if (m_signalType == NO_SIGNAL)
-    {
+    if (m_signalType == NO_SIGNAL) {
         return;
     }
     //* check if the signal is already sent
-    if (m_signalSent)
-    {
+    if (m_signalSent) {
         return;
     }
     m_signalSent = true;
@@ -213,8 +219,7 @@ void Signal::doActionSend()
     color SignalColor = m_buyArrowColor;
     string SignalType = " BUY ";
     int trendType = 1;
-    if (m_signalType == SELL_SIGNAL)
-    {
+    if (m_signalType == SELL_SIGNAL) {
         trendType = -1;
         SignalColor = m_sellArrowColor;
         SignalType = " SELL ";
@@ -225,30 +230,51 @@ void Signal::doActionSend()
     //* Set the Message
     string Message = SignalNumb + " Time : " + TimeToString(m_signalTime) + SignalType + m_symbol;
     //+--- Print Signal Details
-    if (m_prinTolog)
-    {
+    if (m_prinTolog) {
         Print(Message);
     }
-    if (m_sendAlert)
-    {
+    if (m_sendAlert) {
         Alert(Message);
     }
-    if (m_sendNotification)
-    {
+    if (m_sendNotification) {
         SendNotification(Message);
     }
-    if (m_sendToEmail)
-    {
+    if (m_sendToEmail) {
         SendMail("New Signal on " + m_symbol, Message);
     }
-    if (m_showSignalsOnChart)
-    {
-        if (m_showArrows)
-        {
-            m_createObjects.arrow.put(m_signalTime, m_signalPrice, trendType, string(m_signalNumber));
+    if (m_showSignalsOnChart) {
+        if (m_showArrows) {
+            m_createObjects.arrow.put(m_signalTime, m_signalPrice, trendType, m_chartID, string(m_signalNumber));
         }
 
         //* Show Sl Tp S
-        m_createObjects.arrowSlTp.put(m_signalTime, m_slLines, m_tpLines, string(m_signalNumber));
+        m_createObjects.arrowSlTp.put(m_signalTime, m_slLines, m_tpLines, m_chartID, string(m_signalNumber));
     }
+};
+
+/**================================================================================================
+ **                         getChartIdBySymbol
+ *?  checks all open charts and returns the chartId of the chart for the input symbol name.
+ *? If no chart with the specified symbol is found, it returns -1.
+ *================================================================================================**/
+long Signal::getChartIdBySymbol() {
+    long chart_id = ChartFirst();  // Get the first chart ID
+
+    // Loop through all open charts
+    while (chart_id != 0) {
+        // Get the symbol of the current chart
+        string chart_symbol = ChartSymbol(chart_id);
+
+        // Check if the chart symbol matches the input symbol name
+        if (chart_symbol == m_symbol) {
+            // If a matching chart is found, return the chart ID
+            return chart_id;
+        }
+
+        // Move to the next chart
+        chart_id = ChartNext(chart_id);
+    }
+
+    // If no matching chart is found, return -1
+    return -1;
 };
