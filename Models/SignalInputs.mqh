@@ -32,6 +32,7 @@ public:
     ENUM_TIMEFRAMES m_timeFrame;
     int m_zOrder;
     bool m_validHours[];
+   bool m_multiSymbol ;
 
     //* send notificayion parameters :
     bool m_prinTolog;
@@ -93,6 +94,7 @@ public:
  *================================================================================================**/
 SignalInputs::SignalInputs()
 {
+    m_multiSymbol = false;
     ArrayResize(m_tpColors, 3);
     ArrayResize(m_slColors, 3);
     m_pref = "sarir_";
